@@ -1,4 +1,5 @@
 import time
+import random
 
 from Player import Player
 import NPC
@@ -6,7 +7,8 @@ import NPC
 #--Game Class-----------------------------------------------------------------------------------------------
 class Game():
 
-    Room1Item = ['Key', 'Iron Helmet']
+    Username = []
+    Room1Item = ['Coins', 'Iron Helmet']
     Room2Item = ['Iron Sword']
 
     def __init__(self):
@@ -19,9 +21,17 @@ class Game():
         time.sleep(2)
         print("Your Choices Will Appear Like This: [Yes] or [No]")
         time.sleep(2)
-        self.PlayerName = input('Would You Mind Giving Us Your Name For the Adventure?\n[This Can Be Any Name/Word!]\n> ')
+        AskName = input('Would You Like to Use ' + Game.Username[0] + ' As Your Adventuring Name?\n[Yes] or [No]\n> ')
+        if AskName in Player.Yes:
+            self.PlayerName = Game.Username[0]
+        elif AskName in Player.No:
+            self.PlayerName = input('Would You Mind Giving Us Your Name For the Adventure?\n[This Can Be Any Name/Word!]\n> ')
+        else:
+            print('It Was a Yes or No Answer, So I assume that\'s a No...')
+            self.PlayerName = Game.Username[0]
+            return
         time.sleep(1)
-        print(self.PlayerName + '! That\'s a Wonderful Name... Let Us Begin...')
+        print('Well...' + self.PlayerName + '! That\'s a Wonderful Name... Let\'s Begin...')
         time.sleep(2)
         self.SceneSetting()
 
@@ -58,11 +68,11 @@ class Game():
                 time.sleep(2)
                 ItemChoice = input('What Would You Like to Do?\n[Collect] or [Return]\n> ')
                 if ItemChoice in Player.Collect:
-                    Item = input('What Would You Like to Collect?\n[Key] or [Armour]\n> ')
-                    if Item in Player.Key:
-                        if 'Key' in Game.Room1Item:
-                            Game.Room1Item.remove('Key')
-                            Player.ItemCollect('Key')
+                    Item = input('What Would You Like to Collect?\n[Coins] or [Armour]\n> ')
+                    if Item in Player.CoinsChoice:
+                        if 'Coins' in Game.Room1Item:
+                            Game.Room1Item.remove('Coins')
+                            Player.CoinCollect(random.randrange(0, 100))
                         else:
                             print('Please Choose a Valid Option...')
                             RoomChoice()
@@ -151,8 +161,10 @@ class Game():
         def Room1DoorChoice():
             DoorChoice = input("What Would You Like to Do?\n[Use] or [Return]\n> ")
             if DoorChoice in Player.Use:
-                print('You Look in Your Bag... \n' + Player.PlayerBag())
-                Use = input('What Would You Like to Use?\n' + Player.PlayerBag())
+                print('You Look in Your Bag... \n')
+                Player.PlayerBag()
+                Use = input('What Would You Like to Use?\n')
+                Player.PlayerBag()
                 print('There Was No Need to Use Any Items As the Door is Unlocked Already...')
                 time.sleep(2)
                 KeyUse = input('Would You Like to Enter the Room?\n[Yes] or [No]\n> ')
@@ -213,13 +225,23 @@ class Game():
                     print('Please Choose a Valid Option...')
                     self.Room2()
         elif Room2Choice in Player.Look:
-            print('You Notice the Man Trying to Get Your Attention...')
-            ManChoice = input('Do You Wish to Approach Him?\n[Yes] or [No]\n> ')
-            if ManChoice in Player.Yes:
-                NPC.NPC()
-            elif ManChoice in Player.No:
-                print('You Choose to Go Back Into the Room Entrance...')
-                self.Room2()
+            print('You Notice the Man in the Corner again, and Something Glistening in the Corner...')
+            if 'Key' not in Player.Inventory:
+                print('You Notice the Man Trying to Get Your Attention...')
+                ManChoice = input('Do You Wish to Approach Him?\n[Yes] or [No]\n> ')
+                if ManChoice in Player.Yes:
+                    NPC.NPC()
+                elif ManChoice in Player.No:
+                    print('You Choose to Go Back Into the Room Entrance...')
+                    self.Room2()
+                else:
+                    print('Please Choose a Valid Option...')
+                    self.Room2()
+            elif 'Iron Sword' not in Player.ArmourSet:
+                print('')
+            else:
+                print('You See Nothin You Haven\'t Seen Already...')
+                time.sleep(2)
         elif Room2Choice in Player.Bag:
             Player.PlayerBag()
             self.Room2()
@@ -231,19 +253,65 @@ class Game():
             self.Room2()
 
     def Room2Desk(self):
-        pass
+        def Room2DeskChoice():
+            Choice = input('What Would You Like to Do?\n[Look] or [Bag] or [Statistics]or Return\n> ')
+            if Choice in Player.Look:
+                pass
+            elif Choice in Player.Bag:
+                Player.PlayerBag()
+                Room2DeskChoice()
+            elif Choice in Player.Statistics:
+                Player.TotalStatistics()
+                Room2DeskChoice()
+            elif Choice in Player.Return:
+                Room2DeskChoice()
+            else:
+                print('Please Choose A Valid Option...')
+                Room2DeskChoice()
+        
+        print('You Approach the Desk...')
+        time.sleep(2)
+        print('You Notice a Number of Things on the Desk... But There Aren\'t Very Many Valuables...')
+        Room2DeskChoice()
 
 ##A Function to Call Room 3 Within the Game Class
     def Room3(self):
-        print('Room 3 is Under Construction')
-        Room3 = input("What Would You Like to Do?\n[End] or [Return]\n> ")
-        if Room3 in Player.Return:
-            self.Room1()
-        elif Room3 in Player.End:    
-            self.GameEnd()
-        else:
-            print('Please Choose a Valid Option...')
-            self.Room3()
+        def Room3Choice():
+            answer = input('What Would You Like to Do?\n[Open] or [Look] or [Move] or [Bag] or [Statistics]\n> ')
+            if answer in Player.Open:
+                self.Room3Chest()
+            elif answer in Player.Move:
+                Room1 = input('You Can Only Return... Are You Sure?\n[Yes] or [No]')
+                if Room1 in Player.Yes:
+                    self.Room1()
+                elif Room1 in Player.No:
+                    Room3Choice()
+                else:
+                    print('Please Choose a Valid Option... Returning to Original Choice')
+                    time.sleep(2)
+                    Room3Choice()
+            elif answer in Player.Bag:
+                Player.PlayerBag()
+                Room3Choice()
+            elif answer in Player.Statistics:
+                Player.TotalStatistics()
+                Room3Choice()
+            else:
+                print('Please Choose A Valid Option...')
+                Room3Choice()
+
+        print('You Enter the Eerie Room...')
+        time.sleep(2)
+        print('It is Mostly Empty, There\'s a Small Light Shining Through...')
+        time.sleep(2)
+        print('In the Husk of the Light, You Notice Something...')
+        time.sleep(2)
+        print('You Notice a Chest...')
+        time.sleep(2)
+        Room3Choice()
+
+    def Room3Chest(self):
+        pass
 
 ##A Selection of Code to Be Displayed at The End of the Game
     def GameEnd(self):

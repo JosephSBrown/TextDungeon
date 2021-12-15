@@ -28,7 +28,7 @@ class Login():
         ConfirmLabel = tk.Label(CreateFrame, text='Please Confirm Password')
         self.ConfirmUsername = tk.Entry(CreateFrame, width=30, show='*')
         Confirm = tk.Button(CreateFrame, text='Confirm', command=self.RunCreate)
-        self.CreateError = tk.Label(CreateFrame, text=' ')
+        self.CreateError = tk.Label(CreateFrame, text=" ")
 
         UsernameLabel = tk.Label(LoginFrame, text='Enter Username')
         self.Username = tk.Entry(LoginFrame, width=30)
@@ -56,19 +56,20 @@ class Login():
         self.App.mainloop()
 
     def RunLogin(self):
-        self.UserID = self.Username.get()
+        UserID = self.Username.get()
         self.UserPass = self.Password.get()
-        UserFile = self.UserID + '.txt'
+        UserFile = UserID + '.txt'
 
         try: 
             with open('G:\My Drive\Programming Concepts\Text Dungeon\\' + UserFile, "r") as File:
                 for line in File:
                     usercheck, passcheck = line.split(',')
-            if self.UserID == usercheck:
+            if UserID == usercheck:
                 if self.UserPass == passcheck:
                     print("Success")
                     self.ErrorLabel.config(text='Success')
                     self.App.destroy()
+                    Game.Username.append(UserID)
                     Game()
                 else:
                     print("Wrong Password")
@@ -81,20 +82,19 @@ class Login():
             self.ErrorLabel.config(text='User Not Found')
 
     def RunCreate(self):
-        self.UserID = self.CreateUsername.get()
+        UserID = self.CreateUsername.get()
         self.CreatePass = self.CreatePassword.get()
         self.ConfirmPass = self.ConfirmUsername.get()
-        print(self.UserID)
-        print(self.CreatePass)
-        print(self.ConfirmPass)
-        UserFile = self.UserID + '.txt'
+        UserFile = UserID + '.txt'
 
         try: 
             with open('G:\My Drive\Programming Concepts\Text Dungeon\\' + UserFile, "w") as File:
                 if self.CreatePass == self.ConfirmPass:
                     print("Success")
-                    File.write(self.UserID + ',' + self.CreatePass)
+                    File.write(UserID + ',' + self.CreatePass)
                     self.CreateError.config(text='User Created!')
+                    self.App.destroy()
+                    Game.Username.append(UserID)
                     Game()
                 else:
                     print("Passwords Don't Match")

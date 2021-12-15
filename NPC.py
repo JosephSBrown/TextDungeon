@@ -2,7 +2,7 @@ import time
 import random
 
 from Player import Player
-from Game import Game
+import Game
 
 class NPC():
 
@@ -54,22 +54,29 @@ class NPC():
             self.KeyReveal()
 
     def KeyRiddle(self):
-        def ScrambleChoice():        
-            if self.Word == 'treasure':
-                answer = input('What\'s Your Guess?\n> ')
-                if answer == 'treasure':
-                    print('You\'re Correct!')
-                    time.sleep(2)
-                    print('Here\'s the Key...')
-                    Player.Inventory.append('Key')
-                elif answer == 'exit':
-                    print('That\'s Okay, I\'ll Still Be Here When You\'re Ready')
-                    Game.Room2()
-                else:
-                    print('Not Quite, You\'re Nearly There!')
-                    ScrambleChoice()
+        def ScrambleChoice():
+            answer = input('What\'s Your Guess?\n> ')
+            answer.lower()
+            if answer == self.Word:
+                print('You\'re Correct!')
+                time.sleep(2)
+                print('Here\'s the Key...')
+                Player.Inventory.append('Key')
+                Player.PlayerBag()
+                print('Use it Wisely...')
+                time.sleep(2)
+                print('I\'m Sending You Back to the Other Room, but Come Back and Explore if You Want!')
+                time.sleep(3)
+                Game.Game.Room1(self)
+            elif answer in Player.Return:
+                print('That\'s Okay, I\'ll Still Be Here When You\'re Ready')
+                Game.Game.Room2(self)
+            else:
+                print('Not Quite, You\'re Nearly There!')
+                ScrambleChoice()
+           
         
-        print('You must Unscramble the Word Given to You...')
+        print('You must Unscramble the Word Given to You...\nYou can quit at anytime by typing [Return]')
         time.sleep(2)
         print('Here\'s Your Word...')
         WordChoice = ['treasure', 'winner', 'python', 'dungeon']
@@ -80,3 +87,6 @@ class NPC():
         random.shuffle(letters)
         print(''.join(letters))
         ScrambleChoice()
+
+if __name__ == '__main__':
+    NPC()

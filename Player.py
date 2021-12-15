@@ -1,3 +1,5 @@
+import Game
+
 class Player():
 ##A Collection of Variable Lists to Ease Player Selection and to Minimise Code Length in If Statements.
     North = ['North', 'north', 'N', 'n', 'NORTH']
@@ -16,6 +18,8 @@ class Player():
     Bag = ['Bag', 'bag', 'b', 'B', 'BAG']
     Statistics = ['Statistics', 'statistics', 'S', 's', 'STATISTICS']
     ArmourChoice = ['Armour', 'armour', 'a', 'A', 'ARMOUR']
+    CoinsChoice = ['Coins', 'coins', 'c', 'C', 'COINS']
+    Open = ['Open', 'open', 'O', 'o', 'OPEN']
 
 ##Players Overall Stats... Including Coin Total, Health Total and Armour Total
     Coins = 0
@@ -57,4 +61,4 @@ class Player():
 ##A Function Used to Collect Coins to Add to Their Score, Used Cross Class to Prevent Lengthy Game
     def CoinCollect(Amount):
         Player.Coins += Amount
-        print('You Now Have ' + str(Player.Coins) + 'Coins...')
+        print('You Now Have ' + str(Player.Coins) + ' Coins...')
